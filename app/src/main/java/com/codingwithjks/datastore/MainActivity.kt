@@ -3,42 +3,47 @@ package com.codingwithjks.datastore
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
-import com.codingwithjks.datastore.ViewModel.MainViewModel
 import com.codingwithjks.datastore.databinding.ActivityMainBinding
+import com.codingwithjks.datastore.ui.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
+
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private val mainViewModel: MainViewModel by viewModels()
+    private val mainViewModel : MainViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        saveToLocal()
+        writeToLocal()
+
         lifecycleScope.launchWhenStarted {
-            mainViewModel.readFromLocal.collect { data ->
-                binding.preferenceValue.text = "Preference Value is : $data"
+            mainViewModel.readToLocal.collect { user->
+                binding.apply {
+                    preferenceValue.text = "your name is ${user.name} and age is ${user.age}"
+                }
             }
         }
+
     }
 
-    private fun saveToLocal() {
+    private fun writeToLocal() {
         binding.apply {
             ok.setOnClickListener {
-                if (!TextUtils.isEmpty(name.text.toString())) {
-                    Log.d("main", "saveToLocal: ${name.text}")
-                    mainViewModel.saveToLocal(name = name.text.toString())
-                } else {
-                    Toast.makeText(this@MainActivity, "fill the field", Toast.LENGTH_SHORT).show()
+                if(!TextUtils.isEmpty(name.text.toString()) && !TextUtils.isEmpty(age.text.toString())){
+                    mainViewModel.writeToLocal(name.text.toString(),age.text.toString().toInt())
+                }
+                else{
+                    Toast.makeText(this@MainActivity,"fields are empty",Toast.LENGTH_SHORT).show()
                 }
             }
         }
     }
+
 }

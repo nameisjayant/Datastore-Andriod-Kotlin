@@ -22,6 +22,14 @@
         android:layout_margin="5dp"
         android:layout_height="wrap_content"/>
 
+    <EditText
+        android:id="@+id/age"
+        android:layout_width="match_parent"
+        android:hint="Enter age"
+        android:inputType="number"
+        android:layout_margin="5dp"
+        android:layout_height="wrap_content"/>
+
     <Button
         android:id="@+id/ok"
         android:layout_width="wrap_content"
